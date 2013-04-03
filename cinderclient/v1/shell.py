@@ -233,7 +233,6 @@ def do_show(cs, args):
 @utils.service_type('volume')
 def do_create(cs, args):
     """Add a new volume."""
-
     volume_metadata = None
     if args.metadata is not None:
         volume_metadata = _extract_metadata(args)
@@ -351,7 +350,8 @@ def do_snapshot_list(cs, args):
     snapshots = cs.volume_snapshots.list(search_opts=search_opts)
     _translate_volume_snapshot_keys(snapshots)
     utils.print_list(snapshots,
-                     ['ID', 'Volume ID', 'Status', 'Display Name', 'Size'])
+                     ['ID', 'Volume ID', 'Status', 'Display Name', 'Size',
+                      'Source Type'])
 
 
 @utils.arg('snapshot', metavar='<snapshot>', help='ID of the snapshot.')
