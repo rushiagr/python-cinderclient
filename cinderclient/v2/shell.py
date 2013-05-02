@@ -807,7 +807,6 @@ def do_backup_restore(cs, args):
                         args.volume_id)
 
 
-
 @utils.arg(
     'share_protocol',
     metavar='<share_protocol>',
@@ -1032,4 +1031,3 @@ def do_share_snapshot_delete(cs, args):
     """Remove a snapshot."""
     snapshot = _find_share_snapshot(cs, args.snapshot_id)
     snapshot.delete()
-

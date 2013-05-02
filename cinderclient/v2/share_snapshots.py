@@ -89,8 +89,3 @@ class SnapshotManager(base.ManagerWithFind):
         :param share: The :class:`Snapshot` to delete.
         """
         self._delete("/share-snapshots/%s" % base.getid(snapshot))
-
-
-#########################
-
-

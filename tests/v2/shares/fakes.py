@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from cinderclient.v2.contrib import shares as shares_ext_module
+from cinderclient.v2 import shares as shares_ext_module
 from cinderclient.v2 import client
 from tests.v2 import fakes
 

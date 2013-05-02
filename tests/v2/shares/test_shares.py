@@ -16,10 +16,10 @@
 #    under the License.
 
 from cinderclient import extension
-from cinderclient.v2.contrib import shares
+from cinderclient.v2 import shares
 
 from tests import utils
-from tests.v2.contrib.shares import fakes
+from tests.v2.shares import fakes
 
 
 extensions = [
