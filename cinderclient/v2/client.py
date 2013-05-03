@@ -46,7 +46,7 @@ class Client(object):
         self.backups = volume_backups.VolumeBackupManager(self)
         self.restores = volume_backups_restore.VolumeBackupRestoreManager(self)
         self.shares = shares.ShareManager(self)
-        self.share_snapshots = share_snapshots.SnapshotManager(self)
+        self.share_snapshots = share_snapshots.ShareSnapshotManager(self)
 
         # Add in any extensions...
         if extensions:

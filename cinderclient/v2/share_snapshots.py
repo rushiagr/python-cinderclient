@@ -21,21 +21,21 @@ from cinderclient import base
 from cinderclient import utils
 
 
-class Snapshot(base.Resource):
+class ShareSnapshot(base.Resource):
     """Represent a snapshot of a share."""
 
     def __repr__(self):
-        return "<Snapshot: %s>" % self.id
+        return "<ShareSnapshot: %s>" % self.id
 
     def delete(self):
         """Delete this snapshot."""
         self.manager.delete(self)
 
 
-class SnapshotManager(base.ManagerWithFind):
-    """Manage :class:`Snapshot` resources.
+class ShareSnapshotManager(base.ManagerWithFind):
+    """Manage :class:`ShareSnapshot` resources.
     """
-    resource_class = Snapshot
+    resource_class = ShareSnapshot
 
     def create(self, share_id, force=False, name=None, description=None):
         """Create a snapshot of the given share.
@@ -45,7 +45,7 @@ class SnapshotManager(base.ManagerWithFind):
                       share is busy. Default is False.
         :param name: Name of the snapshot
         :param description: Description of the snapshot
-        :rtype: :class:`Snapshot`
+        :rtype: :class:`ShareSnapshot`
         """
         body = {'share-snapshot': {'share_id': share_id,
                                    'force': force,
@@ -57,14 +57,14 @@ class SnapshotManager(base.ManagerWithFind):
         """Get a snapshot.
 
         :param snapshot_id: The ID of the snapshot to get.
-        :rtype: :class:`Snapshot`
+        :rtype: :class:`ShareSnapshot`
         """
         return self._get('/share-snapshots/%s' % snapshot_id, 'share-snapshot')
 
     def list(self, detailed=True, search_opts=None):
         """Get a list of all snapshots of shares.
 
-        :rtype: list of :class:`Snapshot`
+        :rtype: list of :class:`ShareSnapshot`
         """
         if search_opts:
             query_string = urllib.urlencode([(key, value)
@@ -86,6 +86,6 @@ class SnapshotManager(base.ManagerWithFind):
     def delete(self, snapshot):
         """Delete a snapshot of a share.
 
-        :param share: The :class:`Snapshot` to delete.
+        :param share: The :class:`ShareSnapshot` to delete.
         """
         self._delete("/share-snapshots/%s" % base.getid(snapshot))
