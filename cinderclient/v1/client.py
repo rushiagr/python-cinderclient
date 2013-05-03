@@ -50,7 +50,6 @@ class Client(object):
         self.shares = shares.ShareManager(self)
         self.share_snapshots = share_snapshots.SnapshotManager(self)
 
-
         # Add in any extensions...
         if extensions:
             for extension in extensions:
