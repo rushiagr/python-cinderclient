@@ -79,6 +79,28 @@ def _print_volume_snapshot(snapshot):
     utils.print_dict(snapshot._info)
 
 
+def _find_share(cs, share):
+    """Get a share by ID."""
+    return utils.find_resource(cs.shares, share)
+
+
+def _print_share(cs, share):
+    info = share._info.copy()
+    info.pop('links')
+    utils.print_dict(info)
+
+
+def _find_share_snapshot(cs, snapshot):
+    """Get a snapshot by ID."""
+    return utils.find_resource(cs.share_snapshots, snapshot)
+
+
+def _print_share_snapshot(cs, snapshot):
+    info = snapshot._info.copy()
+    info.pop('links')
+    utils.print_dict(info)
+
+
 def _translate_keys(collection, convert):
     for item in collection:
         keys = item.__dict__.keys()
@@ -717,3 +739,229 @@ def do_backup_restore(cs, args):
     """Restore a backup."""
     cs.restores.restore(args.backup,
                         args.volume_id)
+
+
+@utils.arg(
+    'share_protocol',
+    metavar='<share_protocol>',
+    type=str,
+    help='Share type (NFS or CIFS)')
+@utils.arg(
+    'size',
+    metavar='<size>',
+    type=int,
+    help='Share size in GB')
+@utils.arg(
+    '--snapshot-id',
+    metavar='<snapshot-id>',
+    help='Optional snapshot id to create the share from. (Default=None)',
+    default=None)
+@utils.arg(
+    '--name',
+    metavar='<name>',
+    help='Optional share name. (Default=None)',
+    default=None)
+@utils.arg(
+    '--description',
+    metavar='<description>',
+    help='Optional share description. (Default=None)',
+    default=None)
+@utils.service_type('volume')
+def do_share_create(cs, args):
+    """Creates new NAS storage (NFS or CIFS)."""
+    share = cs.shares.create(args.share_protocol, args.size, args.snapshot_id,
+                             args.name, args.description)
+    _print_share(cs, share)
+
+
+@utils.arg(
+    'share',
+    metavar='<share>',
+    help='ID of the NAS to delete.')
+@utils.service_type('volume')
+def do_share_delete(cs, args):
+    """Deletes NAS storage."""
+    cs.shares.delete(args.share)
+
+
+@utils.arg(
+    'share',
+    metavar='<share>',
+    help='ID of the NAS share.')
+@utils.service_type('volume')
+def do_share_show(cs, args):
+    """Show details about a NAS share."""
+    share = _find_share(cs, args.share)
+    _print_share(cs, share)
+
+
+@utils.arg(
+    'share',
+    metavar='<share>',
+    help='ID of the NAS share to modify.')
+@utils.arg(
+    'access_type',
+    metavar='<access_type>',
+    help='access rule type (only "ip" is supported).')
+@utils.arg(
+    'access_to',
+    metavar='<access_to>',
+    help='Value that defines access')
+@utils.service_type('volume')
+def do_share_allow(cs, args):
+    """Allow access to the share."""
+    share = _find_share(cs, args.share)
+    share.allow(args.access_type, args.access_to)
+
+
+@utils.arg(
+    'share',
+    metavar='<share>',
+    help='ID of the NAS share to modify.')
+@utils.arg(
+    'id',
+    metavar='<id>',
+    help='id of the access rule to be deleted.')
+@utils.service_type('volume')
+def do_share_deny(cs, args):
+    """Deny access to a share."""
+    share = _find_share(cs, args.share)
+    share.deny(args.id)
+
+
+@utils.arg(
+    'share',
+    metavar='<share>',
+    help='ID of the share.')
+@utils.service_type('volume')
+def do_share_access_list(cs, args):
+    """Show access list for share."""
+    share = _find_share(cs, args.share)
+    access_list = share.access_list()
+    utils.print_list(access_list, ['id', 'access type', 'access to', 'state'])
+
+
+@utils.arg(
+    '--all-tenants',
+    dest='all_tenants',
+    metavar='<0|1>',
+    nargs='?',
+    type=int,
+    const=1,
+    default=0,
+    help='Display information from all tenants (Admin only).')
+@utils.arg(
+    '--name',
+    metavar='<name>',
+    default=None,
+    help='Filter results by name')
+@utils.arg(
+    '--status',
+    metavar='<status>',
+    default=None,
+    help='Filter results by status')
+@utils.service_type('volume')
+def do_share_list(cs, args):
+    """List all NAS shares."""
+    all_tenants = int(os.environ.get("ALL_TENANTS", args.all_tenants))
+    search_opts = {
+        'all_tenants': all_tenants,
+        'name': args.name,
+        'status': args.status,
+    }
+    shares = cs.shares.list(search_opts=search_opts)
+    utils.print_list(shares,
+                     ['ID', 'Name', 'Size', 'Share Type', 'Status',
+                      'Export location'])
+
+
+@utils.arg(
+    '--all-tenants',
+    dest='all_tenants',
+    metavar='<0|1>',
+    nargs='?',
+    type=int,
+    const=1,
+    default=0,
+    help='Display information from all tenants (Admin only).')
+@utils.arg(
+    '--name',
+    metavar='<name>',
+    default=None,
+    help='Filter results by name')
+@utils.arg(
+    '--status',
+    metavar='<status>',
+    default=None,
+    help='Filter results by status')
+@utils.arg(
+    '--share-id',
+    metavar='<share-id>',
+    default=None,
+    help='Filter results by share-id')
+@utils.service_type('volume')
+def do_share_snapshot_list(cs, args):
+    """List all the snapshots."""
+    all_tenants = int(os.environ.get("ALL_TENANTS", args.all_tenants))
+    search_opts = {
+        'all_tenants': all_tenants,
+        'name': args.name,
+        'status': args.status,
+        'share_id': args.share_id,
+    }
+    snapshots = cs.share_snapshots.list(search_opts=search_opts)
+    utils.print_list(snapshots,
+                     ['ID', 'Share ID', 'Status', 'Name', 'Share Size'])
+
+
+@utils.arg(
+    'snapshot',
+    metavar='<snapshot>',
+    help='ID of the snapshot.')
+@utils.service_type('volume')
+def do_share_snapshot_show(cs, args):
+    """Show details about a snapshot."""
+    snapshot = _find_share_snapshot(cs, args.snapshot)
+    _print_share_snapshot(cs, snapshot)
+
+
+@utils.arg(
+    'share_id',
+    metavar='<share-id>',
+    help='ID of the share to snapshot')
+@utils.arg(
+    '--force',
+    metavar='<True|False>',
+    help='Optional flag to indicate whether '
+    'to snapshot a share even if it\'s busy.'
+    ' (Default=False)',
+    default=False)
+@utils.arg(
+    '--name',
+    metavar='<name>',
+    default=None,
+    help='Optional snapshot name. (Default=None)')
+@utils.arg(
+    '--description',
+    metavar='<description>',
+    default=None,
+    help='Optional snapshot description. (Default=None)')
+@utils.service_type('volume')
+def do_share_snapshot_create(cs, args):
+    """Add a new snapshot."""
+    snapshot = cs.share_snapshots.create(args.share_id,
+                                         args.force,
+                                         args.name,
+                                         args.description)
+    _print_share_snapshot(cs, snapshot)
+
+
+@utils.arg(
+    'snapshot_id',
+    metavar='<snapshot-id>',
+    help='ID of the snapshot to delete.')
+@utils.service_type('volume')
+def do_share_snapshot_delete(cs, args):
+    """Remove a snapshot."""
+    snapshot = _find_share_snapshot(cs, args.snapshot_id)
+    snapshot.delete()
