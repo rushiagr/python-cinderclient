@@ -86,7 +86,7 @@ def _find_share(cs, share):
 
 def _print_share(cs, share):
     info = share._info.copy()
-    info.pop('links')
+    info.pop('links', None)
     utils.print_dict(info)
 
 
@@ -97,7 +97,7 @@ def _find_share_snapshot(cs, snapshot):
 
 def _print_share_snapshot(cs, snapshot):
     info = snapshot._info.copy()
-    info.pop('links')
+    info.pop('links', None)
     utils.print_dict(info)
 
 
@@ -757,20 +757,26 @@ def do_backup_restore(cs, args):
     help='Optional snapshot id to create the share from. (Default=None)',
     default=None)
 @utils.arg(
-    '--name',
-    metavar='<name>',
+    '--display-name',
+    metavar='<display-name>',
     help='Optional share name. (Default=None)',
     default=None)
 @utils.arg(
-    '--description',
-    metavar='<description>',
+    '--display_name',
+    help=argparse.SUPPRESS)
+@utils.arg(
+    '--display-description',
+    metavar='<display-description>',
     help='Optional share description. (Default=None)',
     default=None)
+@utils.arg(
+    '--display_description',
+    help=argparse.SUPPRESS)
 @utils.service_type('volume')
 def do_share_create(cs, args):
     """Creates new NAS storage (NFS or CIFS)."""
     share = cs.shares.create(args.share_protocol, args.size, args.snapshot_id,
-                             args.name, args.description)
+                             args.display_name, args.display_description)
     _print_share(cs, share)
 
 
@@ -851,8 +857,8 @@ def do_share_access_list(cs, args):
     default=0,
     help='Display information from all tenants (Admin only).')
 @utils.arg(
-    '--name',
-    metavar='<name>',
+    '--display-name',
+    metavar='<display-name>',
     default=None,
     help='Filter results by name')
 @utils.arg(
@@ -866,12 +872,12 @@ def do_share_list(cs, args):
     all_tenants = int(os.environ.get("ALL_TENANTS", args.all_tenants))
     search_opts = {
         'all_tenants': all_tenants,
-        'name': args.name,
+        'display_name': args.display_name,
         'status': args.status,
     }
     shares = cs.shares.list(search_opts=search_opts)
     utils.print_list(shares,
-                     ['ID', 'Name', 'Size', 'Share Type', 'Status',
+                     ['ID', 'Display Name', 'Size', 'Share Type', 'Status',
                       'Export location'])
 
 
@@ -885,8 +891,8 @@ def do_share_list(cs, args):
     default=0,
     help='Display information from all tenants (Admin only).')
 @utils.arg(
-    '--name',
-    metavar='<name>',
+    '--display-name',
+    metavar='<display-name>',
     default=None,
     help='Filter results by name')
 @utils.arg(
@@ -905,13 +911,13 @@ def do_share_snapshot_list(cs, args):
     all_tenants = int(os.environ.get("ALL_TENANTS", args.all_tenants))
     search_opts = {
         'all_tenants': all_tenants,
-        'name': args.name,
+        'display_name': args.display_name,
         'status': args.status,
         'share_id': args.share_id,
     }
     snapshots = cs.share_snapshots.list(search_opts=search_opts)
     utils.print_list(snapshots,
-                     ['ID', 'Share ID', 'Status', 'Name', 'Share Size'])
+                     ['ID', 'Share ID', 'Status', 'Display Name', 'Share Size'])
 
 
 @utils.arg(
@@ -937,13 +943,13 @@ def do_share_snapshot_show(cs, args):
     ' (Default=False)',
     default=False)
 @utils.arg(
-    '--name',
-    metavar='<name>',
+    '--display-name',
+    metavar='<display-name>',
     default=None,
     help='Optional snapshot name. (Default=None)')
 @utils.arg(
-    '--description',
-    metavar='<description>',
+    '--display-description',
+    metavar='<display-description>',
     default=None,
     help='Optional snapshot description. (Default=None)')
 @utils.service_type('volume')
@@ -951,8 +957,8 @@ def do_share_snapshot_create(cs, args):
     """Add a new snapshot."""
     snapshot = cs.share_snapshots.create(args.share_id,
                                          args.force,
-                                         args.name,
-                                         args.description)
+                                         args.display_name,
+                                         args.display_description)
     _print_share_snapshot(cs, snapshot)
 
 
