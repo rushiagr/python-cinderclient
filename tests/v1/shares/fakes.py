@@ -52,7 +52,7 @@ class FakeHTTPClient(fakes.FakeHTTPClient):
             'status': 'available',
             'name': 'sharename',
             'display_description': 'description',
-            'share_type': 'type',
+            'share_proto': 'type',
             'export_location': 'location',
         }]}
         return (200, {}, snapshots)

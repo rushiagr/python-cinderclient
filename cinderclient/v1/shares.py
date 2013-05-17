@@ -96,14 +96,14 @@ class ShareManager(base.ManagerWithFind):
         :param snapshot_id: ID of the snapshot
         :param name: Name of the NAS
         :param description: Short description of a share
-        :param share_type: Type of NAS (NFS or CIFS)
+        :param share_proto: Type of NAS (NFS or CIFS)
         :rtype: :class:`Share`
         """
         body = {'share': {'size': size,
                           'snapshot_id': snapshot_id,
                           'name': name,
                           'description': description,
-                          'share_type': share_proto}}
+                          'share_proto': share_proto}}
         return self._create('/shares', body, 'share')
 
     def get(self, share_id):
