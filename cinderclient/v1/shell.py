@@ -917,7 +917,8 @@ def do_share_snapshot_list(cs, args):
     }
     snapshots = cs.share_snapshots.list(search_opts=search_opts)
     utils.print_list(snapshots,
-                     ['ID', 'Share ID', 'Status', 'Display Name', 'Share Size'])
+                     ['ID', 'Share ID', 'Status', 'Display Name',
+                      'Share Size'])
 
 
 @utils.arg(
