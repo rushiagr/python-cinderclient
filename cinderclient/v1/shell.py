@@ -877,7 +877,7 @@ def do_share_list(cs, args):
     }
     shares = cs.shares.list(search_opts=search_opts)
     utils.print_list(shares,
-                     ['ID', 'Display Name', 'Size', 'Share Type', 'Status',
+                     ['ID', 'Display Name', 'Size', 'Share Proto', 'Status',
                       'Export location'])
 
 
