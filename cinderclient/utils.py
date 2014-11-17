@@ -143,7 +143,7 @@ def get_service_type(f):
     return getattr(f, 'service_type', None)
 
 
-def admin_only_command():
+def admin_only_command(f):
     """
     Makes admin-only shell commands accessible by admins only.
     """
