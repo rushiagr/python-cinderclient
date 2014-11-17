@@ -389,6 +389,7 @@ def do_delete(cs, args):
            metavar='<volume>', nargs='+',
            help='Name or ID of volume or volumes to delete.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_force_delete(cs, args):
     """Attempts force-delete of volume, regardless of state."""
     failure_count = 0
@@ -411,6 +412,7 @@ def do_force_delete(cs, args):
                  '"error_deleting." '
                  'Default=available.'))
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_reset_state(cs, args):
     """Explicitly updates the volume state."""
     failure_flag = False
@@ -664,6 +666,7 @@ def do_snapshot_rename(cs, args):
            '"error_deleting." '
            'Default is "available."'))
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_snapshot_reset_state(cs, args):
     """Explicitly updates the snapshot state."""
     failure_count = 0
@@ -708,6 +711,7 @@ def do_extra_specs_list(cs, args):
            metavar='<name>',
            help="Name of new volume type.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_type_create(cs, args):
     """Creates a volume type."""
     vtype = cs.volume_types.create(args.name)
@@ -718,6 +722,7 @@ def do_type_create(cs, args):
            metavar='<id>',
            help="ID of volume type to delete.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_type_delete(cs, args):
     """Deletes a volume type."""
     cs.volume_types.delete(args.id)
@@ -737,6 +742,7 @@ def do_type_delete(cs, args):
            help='The extra specs key and value pair to set or unset. '
            'For unset, specify only the key.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_type_key(cs, args):
     """Sets or unsets extra_spec for a volume type."""
     vtype = _find_volume_type(cs, args.vtype)
@@ -859,6 +865,7 @@ def do_quota_defaults(cs, args):
            default=None,
            help='Volume type. Default=None.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_quota_update(cs, args):
     """Updates quotas for a tenant."""
 
@@ -868,6 +875,7 @@ def do_quota_update(cs, args):
 @utils.arg('tenant', metavar='<tenant_id>',
            help='UUID of tenant to delete the quotas for.')
 @utils.service_type('volume')
+@utils.admin_only_command
 def do_quota_delete(cs, args):
     """Delete the quotas for a tenant."""
 
@@ -878,6 +886,7 @@ def do_quota_delete(cs, args):
            metavar='<class>',
            help='Name of quota class for which to list quotas.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_quota_class_show(cs, args):
     """Lists quotas for a quota class."""
 
@@ -904,6 +913,7 @@ def do_quota_class_show(cs, args):
            default=None,
            help='Volume type. Default=None.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_quota_class_update(cs, args):
     """Updates quotas for a quota class."""
 
@@ -978,6 +988,7 @@ def do_upload_to_image(cs, args):
            'optimizations. Default=False.',
            default=False)
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_migrate(cs, args):
     """Migrates volume to a new host."""
     volume = utils.find_volume(cs, args.volume)
@@ -991,6 +1002,7 @@ def do_migrate(cs, args):
            choices=['never', 'on-demand'], default='never',
            help='Migration policy during retype of volume.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_retype(cs, args):
     """Changes the volume type for a volume."""
     volume = utils.find_volume(cs, args.volume)
@@ -1196,6 +1208,7 @@ def do_extend(cs, args):
 @utils.arg('--binary', metavar='<binary>', default=None,
            help='Service binary. Default=None.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_service_list(cs, args):
     """Lists all services. Filter by host and service binary."""
     result = cs.services.list(host=args.host, binary=args.binary)
@@ -1210,6 +1223,7 @@ def do_service_list(cs, args):
 @utils.arg('host', metavar='<hostname>', help='Host name.')
 @utils.arg('binary', metavar='<binary>', help='Service binary.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_service_enable(cs, args):
     """Enables the service."""
     result = cs.services.enable(args.host, args.binary)
@@ -1222,6 +1236,7 @@ def do_service_enable(cs, args):
 @utils.arg('--reason', metavar='<reason>',
            help='Reason for disabling service.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_service_disable(cs, args):
     """Disables the service."""
     columns = ["Host", "Binary", "Status"]
@@ -1306,6 +1321,7 @@ def _print_volume_encryption_type_list(encryption_types):
 
 
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_encryption_type_list(cs, args):
     """Shows encryption type details for volume types. Admin only."""
     result = cs.volume_encryption_types.list()
@@ -1318,6 +1334,7 @@ def do_encryption_type_list(cs, args):
            type=str,
            help="Name or ID of volume type.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_encryption_type_show(cs, args):
     """Shows encryption type details for a volume type. Admin only."""
     volume_type = _find_volume_type(cs, args.volume_type)
@@ -1364,6 +1381,7 @@ def do_encryption_type_show(cs, args):
            'Valid values are "front-end" or "back-end." '
            'For example, front-end=Nova. Default is "front-end."')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_encryption_type_create(cs, args):
     """Creates encryption type for a volume type. Admin only."""
     volume_type = _find_volume_type(cs, args.volume_type)
@@ -1383,6 +1401,7 @@ def do_encryption_type_create(cs, args):
            type=str,
            help="Name or ID of volume type.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_encryption_type_delete(cs, args):
     """Deletes encryption type for a volume type. Admin only."""
     volume_type = _find_volume_type(cs, args.volume_type)
@@ -1414,6 +1433,7 @@ def _print_associations_list(associations):
            default=[],
            help="QoS specifications.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_create(cs, args):
     """Creates a qos specs."""
     keypair = None
@@ -1424,6 +1444,7 @@ def do_qos_create(cs, args):
 
 
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_list(cs, args):
     """Lists qos specs."""
     qos_specs = cs.qos_specs.list()
@@ -1433,6 +1454,7 @@ def do_qos_list(cs, args):
 @utils.arg('qos_specs', metavar='<qos_specs>',
            help="ID of QoS specifications to show.")
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_show(cs, args):
     """Shows qos specs details."""
     qos_specs = _find_qos_specs(cs, args.qos_specs)
@@ -1447,6 +1469,7 @@ def do_qos_show(cs, args):
            help='Enables or disables deletion of in-use '
                 'QoS specifications. Default=False.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_delete(cs, args):
     """Deletes a specified qos specs."""
     force = strutils.bool_from_string(args.force)
@@ -1460,6 +1483,7 @@ def do_qos_delete(cs, args):
            help='ID of volume type with which to associate '
            'QoS specifications.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_associate(cs, args):
     """Associates qos specs with specified volume type."""
     cs.qos_specs.associate(args.qos_specs, args.vol_type_id)
@@ -1471,6 +1495,7 @@ def do_qos_associate(cs, args):
            help='ID of volume type with which to associate '
            'QoS specifications.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_disassociate(cs, args):
     """Disassociates qos specs from specified volume type."""
     cs.qos_specs.disassociate(args.qos_specs, args.vol_type_id)
@@ -1479,6 +1504,7 @@ def do_qos_disassociate(cs, args):
 @utils.arg('qos_specs', metavar='<qos_specs>',
            help='ID of QoS specifications on which to operate.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_disassociate_all(cs, args):
     """Disassociates qos specs from all its associations."""
     cs.qos_specs.disassociate_all(args.qos_specs)
@@ -1495,6 +1521,7 @@ def do_qos_disassociate_all(cs, args):
            default=[],
            help='Metadata key and value pair to set or unset. '
            'For unset, specify only the key.')
+@utils.admin_only_command
 def do_qos_key(cs, args):
     """Sets or unsets specifications for a qos spec."""
     keypair = _extract_metadata(args)
@@ -1508,6 +1535,7 @@ def do_qos_key(cs, args):
 @utils.arg('qos_specs', metavar='<qos_specs>',
            help='ID of QoS specifications.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_qos_get_association(cs, args):
     """Lists all associations for specified qos specs."""
     associations = cs.qos_specs.get_associations(args.qos_specs)
@@ -1653,6 +1681,7 @@ def do_set_bootable(cs, args):
            help='Specifies that the newly created volume should be'
                 ' marked as bootable')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_manage(cs, args):
     """Manage an existing volume."""
     volume_metadata = None
@@ -1699,6 +1728,7 @@ def do_manage(cs, args):
 @utils.arg('volume', metavar='<volume>',
            help='Name or ID of the volume to unmanage.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_unmanage(cs, args):
     """Stop managing a volume."""
     volume = utils.find_volume(cs, args.volume)
@@ -1708,6 +1738,7 @@ def do_unmanage(cs, args):
 @utils.arg('volume', metavar='<volume>',
            help='Name or ID of the volume to promote.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_replication_promote(cs, args):
     """Promote a secondary volume to primary for a relationship."""
     volume = utils.find_volume(cs, args.volume)
@@ -1717,6 +1748,7 @@ def do_replication_promote(cs, args):
 @utils.arg('volume', metavar='<volume>',
            help='Name or ID of the volume to reenable replication.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_replication_reenable(cs, args):
     """Sync the secondary volume with primary for a relationship."""
     volume = utils.find_volume(cs, args.volume)
@@ -1732,6 +1764,7 @@ def do_replication_reenable(cs, args):
            default=0,
            help='Shows details for all tenants. Admin only.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_consisgroup_list(cs, args):
     """Lists all consistencygroups."""
     consistencygroups = cs.consistencygroups.list()
@@ -1744,6 +1777,7 @@ def do_consisgroup_list(cs, args):
            metavar='<consistencygroup>',
            help='Name or ID of a consistency group.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_consisgroup_show(cs, args):
     """Shows details of a consistency group."""
     info = dict()
@@ -1769,6 +1803,7 @@ def do_consisgroup_show(cs, args):
            default=None,
            help='Availability zone for volume. Default=None.')
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_consisgroup_create(cs, args):
     """Creates a consistency group."""
 
@@ -1799,6 +1834,7 @@ def do_consisgroup_create(cs, args):
                 'flag is required for it to be deleted.',
            default=False)
 @utils.service_type('volumev2')
+@utils.admin_only_command
 def do_consisgroup_delete(cs, args):
     """Removes one or more consistency groups."""
     failure_count = 0

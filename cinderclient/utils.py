@@ -143,6 +143,15 @@ def get_service_type(f):
     return getattr(f, 'service_type', None)
 
 
+def admin_only_command():
+    """
+    Makes admin-only shell commands accessible by admins only.
+    """
+    def inner(f):
+        f.is_admin = True
+        return f
+    return inner
+
 def pretty_choice_list(l):
     return ', '.join("'%s'" % i for i in l)
 

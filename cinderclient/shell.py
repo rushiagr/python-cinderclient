@@ -536,10 +536,7 @@ class OpenStackCinderShell(object):
         self._run_extension_hooks('__post_parse_args__', args)
 
         # Short-circuit and deal with help right away.
-        if args.func == self.do_help:
-            self.do_help(args)
-            return 0
-        elif args.func == self.do_bash_completion:
+        if args.func == self.do_bash_completion:
             self.do_bash_completion(args)
             return 0
 
@@ -656,6 +653,12 @@ class OpenStackCinderShell(object):
         except exc.AuthorizationFailure:
             raise exc.CommandError("Unable to authorize user.")
 
+
+
+        if args.func == self.do_help:
+            self.do_help(args)
+            return 0
+
         endpoint_api_version = None
         # Try to get the API version from the endpoint URL.  If that fails fall
         # back to trying to use what the user specified via
@@ -683,6 +686,7 @@ class OpenStackCinderShell(object):
                                "endpoint URL or user input. Falling back "
                                "to the default API version: %s" %
                                endpoint_api_version)
+
 
         profile = osprofiler_profiler and options.profile
         if profile:
